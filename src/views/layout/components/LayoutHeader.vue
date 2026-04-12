@@ -1,5 +1,21 @@
-<script setup></script>
-
+<script setup>
+// 在对应位置调用接口函数
+import { getCategoryAPI } from "@/apis/layout";
+// 接收数据函数要用异步请求
+// 定义一个数组来接收接口函数返回的数据
+import { ref } from "vue";
+const categoryList = ref([]);
+const getCategory = async () => {
+  const res = await getCategoryAPI();
+  console.log(res);
+  categoryList.value = res.result;
+};
+// 调用接口函数要放在生命周期函数中，组件挂载完成后调用接口函数获取数据
+import { onMounted } from "vue";
+onMounted(() => {
+  getCategory();
+});
+</script>
 <template>
   <header class="app-header">
     <div class="container">
@@ -10,9 +26,9 @@
         <li class="home">
           <RouterLink to="/">首页</RouterLink>
         </li>
-        <li><RouterLink to="/">居家</RouterLink></li>
-        <li><RouterLink to="/">美食</RouterLink></li>
-        <li><RouterLink to="/">服饰</RouterLink></li>
+        <li v-for="item in categoryList" :key="item.id">
+          <RouterLink to="/"> {{ item.name }} </RouterLink>
+        </li>
       </ul>
       <div class="search">
         <i class="iconfont icon-search"></i>
