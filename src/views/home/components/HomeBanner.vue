@@ -13,6 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- 使用element-plus的轮播图组件，展示bannerList中的图片数据 -->
   <div class="home-banner">
     <el-carousel height="500px">
       <el-carousel-item v-for="item in bannerList" :key="item.id">
