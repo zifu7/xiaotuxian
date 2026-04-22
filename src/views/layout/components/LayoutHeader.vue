@@ -13,8 +13,11 @@ const categoryStore = useCategoryStore();
         <li class="home">
           <RouterLink to="/">首页</RouterLink>
         </li>
+        <!-- active-class="active"当被点击时，RouterLink会自动添加active类名 -->
         <li v-for="item in categoryStore.categoryList" :key="item.id">
-          <RouterLink :to="`/category/${item.id}`"> {{ item.name }} </RouterLink>
+          <RouterLink active-class="active" :to="`/category/${item.id}`">
+            {{ item.name }}
+          </RouterLink>
         </li>
       </ul>
       <div class="search">
