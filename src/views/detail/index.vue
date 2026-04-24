@@ -2,12 +2,12 @@
 import { getDetailAPI } from "@/apis/detail";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import detailHot from "./detailHot.vue";
 const route = useRoute();
 const goods = ref({});
 const getGoods = async () => {
   const res = await getDetailAPI(route.params.id);
   goods.value = res.result;
-  console.log(goods.value);
 };
 onMounted(() => {
   getGoods();
@@ -16,7 +16,7 @@ onMounted(() => {
 
 <template>
   <div class="xtx-goods-page">
-    <!-- 提前判断是否有数据，避免页面报错 -->
+    <!-- 提前判断是否有数据，避免页面报错，通过v-if控制渲染 -->
     <div class="container" v-if="goods.details">
       <div class="bread-container">
         <el-breadcrumb separator=">">
@@ -115,7 +115,12 @@ onMounted(() => {
               </div>
             </div>
             <!-- 24热榜+专题推荐 -->
-            <div class="goods-aside"></div>
+            <div class="goods-aside">
+              <!-- 24小时 -->
+              <detailHot />
+              <!-- 周热榜 -->
+              <detailHot />
+            </div>
           </div>
         </div>
       </div>
