@@ -70,6 +70,7 @@ const load = async () => {
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
       <!-- v-infinite-scroll="load"实现无限滚动 -->
+      <!-- :infinite-scroll-disabled="disabled"禁用功能要加冒号 -->
       <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
         <!-- 商品列表-->
         <goodsItem v-for="good in goodList" :good="good" :key="good.id" />

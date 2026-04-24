@@ -23,6 +23,11 @@ const router = createRouter({
       ],
     },
   ],
+  // 路由切换时滚动行为
+  scrollBehavior() {
+    // 始终滚动到顶部
+    return { top: 0 };
+  },
 });
 
 export default router;
