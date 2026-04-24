@@ -29,6 +29,25 @@ const getGoodList = async () => {
 onMounted(() => {
   getGoodList();
 });
+const tabChange = () => {
+  // console.log(reqData.value.sortField);
+  reqData.value.page = 1;
+  getGoodList();
+};
+
+//无限滚动加载更多数据
+const disabled = ref(false);
+const load = async () => {
+  console.log("加载更多数据");
+  reqData.value.page++;
+  const res = await getSubCategoryAPI(reqData.value);
+  // 拼接新老数据，而不是覆盖原来的数据
+  goodList.value = [...goodList.value, ...res.result.items];
+  if (res.result.items.length === 0) {
+    // 没有更多数据了，禁止继续加载
+    disabled.value = true;
+  }
+};
 </script>
 
 <template>
@@ -44,12 +63,14 @@ onMounted(() => {
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <!-- v-model双向绑定sortField,当点击tab时会触发tabChange方法 -->
+      <el-tabs v-model="reqData.sortField" @tab-click="tabChange">
         <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <!-- v-infinite-scroll="load"实现无限滚动 -->
+      <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
         <!-- 商品列表-->
         <goodsItem v-for="good in goodList" :good="good" :key="good.id" />
       </div>
