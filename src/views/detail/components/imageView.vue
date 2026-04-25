@@ -7,8 +7,12 @@ const target = ref(null);
 const { elementX, elementY, isOutside } = useMouseInElement(target);
 const left = ref(0);
 const top = ref(0);
+const positionX = ref(0);
+const positionY = ref(0);
 // 控制滑块跟随鼠标移动
-watch([elementX, elementY], () => {
+watch([elementX, elementY, isOutside], () => {
+  // 如果鼠标没有在盒子内部，直接不执行后面的逻辑
+  if (isOutside.value) return;
   // 有效范围内
   if (elementX.value > 100 && elementX.value < 300) {
     left.value = elementX.value - 100;
@@ -24,7 +28,10 @@ watch([elementX, elementY], () => {
   if (elementY.value < 100 || elementY.value > 300) {
     top.value = top.value < 100 ? 0 : 200;
   }
+  positionX.value = -left.value * 2;
+  positionY.value = -top.value * 2;
 });
+
 // 图片列表
 const imageList = [
   "https://yanxuan-item.nosdn.127.net/d917c92e663c5ed0bb577c7ded73e4ec.png",
@@ -41,13 +48,12 @@ const enterHandler = (i) => {
 </script>
 
 <template>
-  {{ elementX }}, {{ elementY }}, {{ isOutside }}
   <div class="goods-image">
     <!-- 左侧大图-->
     <div class="middle" ref="target">
       <img :src="imageList[activeIndex]" alt="" />
       <!-- 蒙层小滑块 -->
-      <div class="layer" :style="{ left: `${left}px`, top: `${top}px` }"></div>
+      <div class="layer" :style="{ left: `${left}px`, top: `${top}px` }" v-show="!isOutside"></div>
     </div>
     <!-- 小图列表 -->
     <ul class="small">
@@ -67,11 +73,11 @@ const enterHandler = (i) => {
       :style="[
         {
           backgroundImage: `url(${imageList[0]})`,
-          backgroundPositionX: `0px`,
-          backgroundPositionY: `0px`,
+          backgroundPositionX: `${positionX}px`,
+          backgroundPositionY: `${positionY}px`,
         },
       ]"
-      v-show="false"
+      v-show="!isOutside"
     ></div>
   </div>
 </template>
