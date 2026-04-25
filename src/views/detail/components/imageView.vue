@@ -1,44 +1,12 @@
 <script setup>
-import { ref, useTemplateRef, watch } from "vue";
+import { ref, watch } from "vue";
 import { useMouseInElement } from "@vueuse/core";
-const target = ref(null);
-// 用useMouseInElement这个组合式函数来监听鼠标在某个元素内的状态，返回鼠标位置和是否在元素内的状态
-//elementX, elementY指的是指定元素的相对位置，isOutside指的是鼠标是否在元素外面
-const { elementX, elementY, isOutside } = useMouseInElement(target);
-const left = ref(0);
-const top = ref(0);
-const positionX = ref(0);
-const positionY = ref(0);
-// 控制滑块跟随鼠标移动
-watch([elementX, elementY, isOutside], () => {
-  // 如果鼠标没有在盒子内部，直接不执行后面的逻辑
-  if (isOutside.value) return;
-  // 有效范围内
-  if (elementX.value > 100 && elementX.value < 300) {
-    left.value = elementX.value - 100;
-  }
-  if (elementY.value > 100 && elementY.value < 300) {
-    top.value = elementY.value - 100;
-  }
-  // 超出有效范围
-  if (elementX.value < 100 || elementX.value > 300) {
-    left.value = left.value < 100 ? 0 : 200;
-  }
-
-  if (elementY.value < 100 || elementY.value > 300) {
-    top.value = top.value < 100 ? 0 : 200;
-  }
-  positionX.value = -left.value * 2;
-  positionY.value = -top.value * 2;
-});
-// props传递图片
 defineProps({
   imageList: {
     type: Array,
     default: () => [],
   },
 });
-
 // 图片列表
 // const imageList = [
 //   "https://yanxuan-item.nosdn.127.net/d917c92e663c5ed0bb577c7ded73e4ec.png",
@@ -47,11 +15,58 @@ defineProps({
 //   "https://yanxuan-item.nosdn.127.net/f93243224dc37674dfca5874fe089c60.jpg",
 //   "https://yanxuan-item.nosdn.127.net/f881cfe7de9a576aaeea6ee0d1d24823.jpg",
 // ];
+
+// 1.小图切换大图显示
 const activeIndex = ref(0);
-const enterHandler = (i) => {
+
+const enterhandler = (i) => {
   activeIndex.value = i;
-  //   console.log(activeIndex.value);
 };
+
+// 2. 获取鼠标相对位置
+const target = ref(null);
+const { elementX, elementY, isOutside } = useMouseInElement(target);
+
+// 3. 控制滑块跟随鼠标移动（监听elementX/Y变化，一旦变化 重新设置left/top）
+const left = ref(0);
+const top = ref(0);
+
+const positionX = ref(0);
+const positionY = ref(0);
+watch([elementX, elementY, isOutside], () => {
+  // console.log("xy变化了");
+  // 如果鼠标没有移入到盒子里面 直接不执行后面的逻辑
+  if (isOutside.value) return;
+  // console.log("后续逻辑执行了");
+  // 有效范围内控制滑块距离
+  // 横向
+  if (elementX.value > 100 && elementX.value < 300) {
+    left.value = elementX.value - 100;
+  }
+  // 纵向
+  if (elementY.value > 100 && elementY.value < 300) {
+    top.value = elementY.value - 100;
+  }
+
+  // 处理边界
+  if (elementX.value > 300) {
+    left.value = 200;
+  }
+  if (elementX.value < 100) {
+    left.value = 0;
+  }
+
+  if (elementY.value > 300) {
+    top.value = 200;
+  }
+  if (elementY.value < 100) {
+    top.value = 0;
+  }
+
+  // 控制大图的显示
+  positionX.value = -left.value * 2;
+  positionY.value = -top.value * 2;
+});
 </script>
 
 <template>
@@ -60,16 +75,15 @@ const enterHandler = (i) => {
     <div class="middle" ref="target">
       <img :src="imageList[activeIndex]" alt="" />
       <!-- 蒙层小滑块 -->
-      <div class="layer" :style="{ left: `${left}px`, top: `${top}px` }" v-show="!isOutside"></div>
+      <div class="layer" v-show="!isOutside" :style="{ left: `${left}px`, top: `${top}px` }"></div>
     </div>
     <!-- 小图列表 -->
     <ul class="small">
-      <!-- :class="{ active: activeIndex === i }"当当前下标等于i时,添加active，进行激活 -->
       <li
         v-for="(img, i) in imageList"
         :key="i"
-        @mouseenter="enterHandler(i)"
-        :class="{ active: activeIndex === i }"
+        @mouseenter="enterhandler(i)"
+        :class="{ active: i === activeIndex }"
       >
         <img :src="img" alt="" />
       </li>
@@ -79,7 +93,7 @@ const enterHandler = (i) => {
       class="large"
       :style="[
         {
-          backgroundImage: `url(${imageList[0]})`,
+          backgroundImage: `url(${imageList[activeIndex]})`,
           backgroundPositionX: `${positionX}px`,
           backgroundPositionY: `${positionY}px`,
         },

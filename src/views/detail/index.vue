@@ -2,7 +2,8 @@
 import { getDetailAPI } from "@/apis/detail";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import detailHot from "./detailHot.vue";
+import xtxSku from "@/components/xtxSku/index.vue";
+import detailHot from "./components/detailHot.vue";
 import imageView from "./components/imageView.vue";
 const route = useRoute();
 const goods = ref({});
@@ -13,6 +14,10 @@ const getGoods = async () => {
 onMounted(() => {
   getGoods();
 });
+//sku规格被点击时
+const skuChange = (sku) => {
+  console.log(sku);
+};
 </script>
 
 <template>
@@ -86,7 +91,7 @@ onMounted(() => {
                 </dl>
               </div>
               <!-- sku组件 -->
-
+              <xtxSku :goods="goods" @change="skuChange" />
               <!-- 数据组件 -->
 
               <!-- 按钮组件 -->
