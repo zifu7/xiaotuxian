@@ -36,6 +36,17 @@ const rules = {
     },
   ],
 };
+// 用form实例来做统一校验
+const formRef = ref(null);
+const doLogin = () => {
+  formRef.value.validate((valid) => {
+    if (valid) {
+      console.log("校验通过了");
+    } else {
+      console.log("校验失败了");
+    }
+  });
+};
 </script>
 
 <template>
@@ -61,6 +72,7 @@ const rules = {
           <div class="form">
             <!-- :model="form" :rules="rules"绑定表单对象和规则对象 -->
             <el-form
+              ref="formRef"
               :model="form"
               :rules="rules"
               label-position="right"
@@ -80,7 +92,7 @@ const rules = {
                   我已同意隐私条款和服务条款
                 </el-checkbox>
               </el-form-item>
-              <el-button size="large" class="subBtn">点击登录</el-button>
+              <el-button size="large" class="subBtn" @click="doLogin">点击登录</el-button>
             </el-form>
           </div>
         </div>
