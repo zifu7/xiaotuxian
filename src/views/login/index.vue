@@ -1,4 +1,42 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+// 表单校验（用户名+密码）
+
+// 准备表单对象
+const form = ref({
+  account: "",
+  password: "",
+  agree: true,
+});
+// 准备规则对象
+const rules = {
+  account: [
+    {
+      //1.必须填写 2.校验不通过时触发 3.触发时机（失去焦点时）
+      required: true,
+      message: "用户名不能为空",
+      trigger: "blur",
+    },
+  ],
+  password: [
+    { required: true, message: "密码不能为空", trigger: "blur" },
+    { min: 6, max: 14, message: "密码长度必须在6-14位", trigger: "blur" },
+  ],
+  // 自定义校验规则
+  agree: [
+    {
+      validator: (rule, value, callback) => {
+        console.log(value);
+        if (value) {
+          callback();
+        } else {
+          callback(new Error("请同意隐私条款和服务条款"));
+        }
+      },
+    },
+  ],
+};
+</script>
 
 <template>
   <div>
@@ -21,15 +59,26 @@
         </nav>
         <div class="account-box">
           <div class="form">
-            <el-form label-position="right" label-width="60px" status-icon>
-              <el-form-item label="账户">
-                <el-input />
+            <!-- :model="form" :rules="rules"绑定表单对象和规则对象 -->
+            <el-form
+              :model="form"
+              :rules="rules"
+              label-position="right"
+              label-width="60px"
+              status-icon
+            >
+              <!-- prop="account"来校验输入的内容是否符合规则 -->
+              <el-form-item prop="account" label="账户">
+                <!-- v-model="form.account"实现双向绑定 -->
+                <el-input v-model="form.account" />
               </el-form-item>
-              <el-form-item label="密码">
-                <el-input />
+              <el-form-item prop="password" label="密码">
+                <el-input v-model="form.password" />
               </el-form-item>
-              <el-form-item label-width="22px">
-                <el-checkbox size="large"> 我已同意隐私条款和服务条款 </el-checkbox>
+              <el-form-item prop="agree" label-width="22px">
+                <el-checkbox v-model="form.agree" size="large">
+                  我已同意隐私条款和服务条款
+                </el-checkbox>
               </el-form-item>
               <el-button size="large" class="subBtn">点击登录</el-button>
             </el-form>
