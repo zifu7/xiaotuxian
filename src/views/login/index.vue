@@ -1,7 +1,11 @@
 <script setup>
 import { ref } from "vue";
+import { loginAPI } from "@/apis/user.js";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import "element-plus/theme-chalk/el-message.css";
 // 表单校验（用户名+密码）
-
+//12056258282 hm#qd@23!
 // 准备表单对象
 const form = ref({
   account: "",
@@ -26,7 +30,7 @@ const rules = {
   agree: [
     {
       validator: (rule, value, callback) => {
-        console.log(value);
+        // console.log(value);
         if (value) {
           callback();
         } else {
@@ -38,12 +42,25 @@ const rules = {
 };
 // 用form实例来做统一校验
 const formRef = ref(null);
+const router = useRouter();
 const doLogin = () => {
-  formRef.value.validate((valid) => {
+  // 解构赋值
+  const { account, password } = form.value;
+  formRef.value.validate(async (valid) => {
     if (valid) {
-      console.log("校验通过了");
+      const res = await loginAPI({
+        account,
+        password,
+      });
+      // console.log(res);
+      // 提示用户登录成功
+      ElMessage({
+        type: "success",
+        message: "登录成功",
+      });
+      // 跳转到首页,replase防止用户重复跳转
+      router.replace("/");
     } else {
-      console.log("校验失败了");
     }
   });
 };
