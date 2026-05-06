@@ -16,10 +16,12 @@ httpInstance.interceptors.request.use(
 
 // axios响应式拦截器
 httpInstance.interceptors.response.use(
+  // 成功响应
   (res) => res.data,
+  // 响应失败
   (e) => {
     ElMessage({
-      typr: "waring",
+      typr: "warning",
       message: e.response.data.message,
     });
     return Promise.reject(e);

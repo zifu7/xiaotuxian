@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from "vue";
-import { loginAPI } from "@/apis/user.js";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
+
+import { useUserStore } from "@/stores/user.js";
 // 表单校验（用户名+密码）
 //12056258282 hm#qd@23!
 // 准备表单对象
@@ -48,10 +49,7 @@ const doLogin = () => {
   const { account, password } = form.value;
   formRef.value.validate(async (valid) => {
     if (valid) {
-      const res = await loginAPI({
-        account,
-        password,
-      });
+      await useUserStore.getUserInfo({ account, password });
       // console.log(res);
       // 提示用户登录成功
       ElMessage({
@@ -60,7 +58,6 @@ const doLogin = () => {
       });
       // 跳转到首页,replase防止用户重复跳转
       router.replace("/");
-    } else {
     }
   });
 };
