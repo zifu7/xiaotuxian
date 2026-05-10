@@ -42,12 +42,21 @@ export const useCartStore = defineStore(
     });
     //是否全选 every方法：如果item.selected都为true，则返回true，否则返回false
     const isAll = computed(() => cartList.value.every((item) => item.selected));
-
+    //已选择的数量
+    const selectedCount = computed(() =>
+      cartList.value.filter((item) => item.selected).reduce((a, c) => a + c.count, 0),
+    );
+    //已选择商品价格
+    const selectedPrice = computed(() =>
+      cartList.value.filter((item) => item.selected).reduce((a, c) => a + c.count * c.price, 0),
+    );
     return {
       cartList,
       allCount,
       allPrice,
       isAll,
+      selectedCount,
+      selectedPrice,
       allCheck,
       addCart,
       delCart,
