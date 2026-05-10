@@ -19,7 +19,7 @@ export const useCartStore = defineStore(
     //定义actions-addCart
     const addCart = async (goods) => {
       const { skuId, count } = goods;
-      if (isLogin) {
+      if (isLogin.value) {
         //登录之后的加入购物车逻辑,调用接口
         await insertCartAPI({ skuId, count });
         upDateCartList();
@@ -36,7 +36,7 @@ export const useCartStore = defineStore(
     };
     //删除购物车中的商品
     const delCart = async (skuId) => {
-      if (isLogin) {
+      if (isLogin.value) {
         //登录之后的删除购物车逻辑,调用接口,删除后获取最新的购物车列表
         await delCartAPI([skuId]);
         upDateCartList();
@@ -89,6 +89,7 @@ export const useCartStore = defineStore(
       addCart,
       delCart,
       singleCheck,
+      upDateCartList,
     };
   },
   //持久化数据到localStorage中,刷新页面时数据不丢失
