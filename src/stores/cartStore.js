@@ -1,20 +1,33 @@
 //封装购物车模块的vuex
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+// import { useCartStore } from "@/stores/cartStore";
+import { insertCartAPI, findNewCartListAPI } from "@/apis/cart";
 export const useCartStore = defineStore(
   "cart",
   () => {
+    const store = useCartStore();
+    //如果拿到了token,那islogin就是true,否则就是false
+    const isLogin = computed(() => store.userInfo.token);
     //定义state-cartList
     const cartList = ref([]);
     //定义actions-addCart
-    const addCart = (goods) => {
-      //将商品添加到购物车
-      //判断购物车中是否已经有该商品,如果有,数量加1,如果没有,push到购物车
-      const item = cartList.value.find((item) => item.skuId === goods.skuId);
-      if (item) {
-        item.count++;
+    const addCart = async (goods) => {
+      const { skuId, count } = goods;
+      if (isLogin) {
+        //登录之后的加入购物车逻辑,调用接口
+        await insertCartAPI({ skuId, count });
+        const res = await findNewCartListAPI();
+        cartList.value = res.result;
       } else {
-        cartList.value.push(goods);
+        //将商品添加到购物车，使用本地数据
+        //判断购物车中是否已经有该商品,如果有,数量加1,如果没有,push到购物车
+        const item = cartList.value.find((item) => item.skuId === goods.skuId);
+        if (item) {
+          item.count++;
+        } else {
+          cartList.value.push(goods);
+        }
       }
     };
     //删除购物车中的商品
