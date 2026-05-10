@@ -28,6 +28,11 @@ export const useCartStore = defineStore(
       const item = cartList.value.find((item) => item.skuId === skuId);
       item.selected = selected;
     };
+    //全选功能
+    const allCheck = (selected) => {
+      cartList.value.forEach((item) => (item.selected = selected));
+    };
+
     //计算属性 总数量是所有count的和,总价格是所有count*price的和
     const allCount = computed(() => {
       return cartList.value.reduce((a, c) => a + c.count, 0);
@@ -35,10 +40,15 @@ export const useCartStore = defineStore(
     const allPrice = computed(() => {
       return cartList.value.reduce((a, c) => a + c.count * c.price, 0);
     });
+    //是否全选 every方法：如果item.selected都为true，则返回true，否则返回false
+    const isAll = computed(() => cartList.value.every((item) => item.selected));
+
     return {
       cartList,
       allCount,
       allPrice,
+      isAll,
+      allCheck,
       addCart,
       delCart,
       singleCheck,
