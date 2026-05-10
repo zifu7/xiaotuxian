@@ -23,7 +23,11 @@ export const useCartStore = defineStore(
       const idx = cartList.value.findIndex((item) => item.skuId === skuId);
       cartList.value.splice(idx, 1);
     };
-
+    //单选功能
+    const singleCheck = (skuId, selected) => {
+      const item = cartList.value.find((item) => item.skuId === skuId);
+      item.selected = selected;
+    };
     //计算属性 总数量是所有count的和,总价格是所有count*price的和
     const allCount = computed(() => {
       return cartList.value.reduce((a, c) => a + c.count, 0);
@@ -37,6 +41,7 @@ export const useCartStore = defineStore(
       allPrice,
       addCart,
       delCart,
+      singleCheck,
     };
   },
   //持久化数据到localStorage中,刷新页面时数据不丢失
