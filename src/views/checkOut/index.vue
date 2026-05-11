@@ -14,6 +14,14 @@ onMounted(() => {
   getCheckInfo();
 });
 const showDialog = ref(false); //切换地址的dialog
+const activeAddress = ref({});
+const switchAddress = (item) => {
+  activeAddress.value = item;
+};
+const confirm = () => {
+  curAddress.value = activeAddress.value;
+  showDialog.value = false;
+};
 </script>
 
 <template>
@@ -121,7 +129,13 @@ const showDialog = ref(false); //切换地址的dialog
 
   <el-dialog title="切换收货地址" v-model="showDialog" width="30%" center>
     <div class="addressWrapper">
-      <div class="text item" v-for="item in checkInfo.userAddresses" :key="item.id">
+      <div
+        class="text item"
+        :class="{ active: activeAddress.id === item.id }"
+        @click="switchAddress(item)"
+        v-for="item in checkInfo.userAddresses"
+        :key="item.id"
+      >
         <ul>
           <li>
             <span>收<i />货<i />人：</span>{{ item.receiver }}
@@ -134,7 +148,7 @@ const showDialog = ref(false); //切换地址的dialog
     <template #footer>
       <span class="dialog-footer">
         <el-button>取消</el-button>
-        <el-button type="primary">确定</el-button>
+        <el-button type="primary" @click="confirm">确定</el-button>
       </span>
     </template>
   </el-dialog>
