@@ -48,7 +48,8 @@ const categoryStore = useCategoryStore();
       height: 132px;
       width: 100%;
       text-indent: -9999px;
-      background: url("@/assets/images/logo.png") no-repeat center 18px / contain;
+      background: url("@/assets/image/0940ebb5177afe5a5e054e13abf0d2aa.png") no-repeat center 18px /
+        contain;
     }
   }
 
