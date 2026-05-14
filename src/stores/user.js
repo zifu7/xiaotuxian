@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { loginAPI } from "@/apis/user.js";
 import { mergeCartAPI } from "@/apis/cart.js";
 import { useCartStore } from "./cartStore.js";
+// 创建一个名为"user"的pinia仓库
 export const useUserStore = defineStore(
   "user",
   () => {
@@ -10,10 +11,11 @@ export const useUserStore = defineStore(
     const userInfo = ref({});
     //定义获取接口数据的action
     const getUserInfo = async ({ account, password }) => {
+      // 调用loginAPI发送请求，将拿到的用户信息存到userInfo中
       const res = await loginAPI({ account, password });
       userInfo.value = res.result;
       const cartStore = useCartStore();
-      //合并购物车操作
+      //合并购物车操作，将本地购物车数据传给后端，后端合并到数据库
       await mergeCartAPI(
         cartStore.cartList.map((item) => {
           return {
@@ -41,6 +43,7 @@ export const useUserStore = defineStore(
       clearUserInfo,
     };
   },
+  // 开启持久化，数据存到localStorage中，刷新页面不丢失
   {
     persist: true,
   },

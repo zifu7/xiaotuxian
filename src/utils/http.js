@@ -1,14 +1,15 @@
 import axios from "axios";
 import { ElMessage } from "element-plus";
 import { useUserStore } from "../stores/user";
+// 因为不是组件，所以不能用useRouter
 import router from "../router";
-// 创建axios实例
+// 创建axios实例，配一个好的请求发送器。baseURL是基础地址，后续发请求时只需要写接口地址就行了，timeout是请求超时时间，单位是毫秒
 const httpInstance = axios.create({
   baseURL: "http://pcapi-xiaotuxian-front-devtest.itheima.net",
   timeout: 50000,
 });
 
-// axios请求拦截器
+// axios请求拦截器。发送请求之前都会执行这个函数
 httpInstance.interceptors.request.use(
   (config) => {
     //从pinia获取token数据
@@ -25,14 +26,14 @@ httpInstance.interceptors.request.use(
 
 // axios响应式拦截器
 httpInstance.interceptors.response.use(
-  // 成功响应
+  // 成功响应,简化数据结构，直接拿到后端返回的data数据
   (res) => res.data,
   // 响应失败
   (e) => {
     const userStore = useUserStore();
     // 统一错误提示
     ElMessage({
-      typr: "warning",
+      type: "warning",
       message: e.response.data.message,
     });
     //401token失效处理
@@ -40,7 +41,6 @@ httpInstance.interceptors.response.use(
     //跳转到登录页
     if (e.response.status === 401) {
       userStore.clearUserInfo();
-      // 这里不使用userouter。在组建script中使用userouter,普通js中不行
       router.push("/login");
     }
     return Promise.reject(e);

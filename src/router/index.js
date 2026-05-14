@@ -14,6 +14,7 @@ import PayBack from "@/views/pay/payBack.vue";
 import Member from "@/views/member/index.vue";
 import UserInfo from "@/views/member/components/userInfo.vue";
 import UserOrder from "@/views/member/components/userOrder.vue";
+// 访问某个路径router，显示对应的组件component
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -26,6 +27,7 @@ const router = createRouter({
       component: Layout,
       children: [
         { path: "", component: Home },
+        //动态路由，:id表示占位符，可以匹配任意的id值，在组件中通过$route.params.id获取这个id值
         { path: "category/:id", component: Category },
         { path: "category/sub/:id", component: subCategory },
         { path: "detail/:id", component: Detail },

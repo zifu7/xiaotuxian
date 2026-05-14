@@ -7,7 +7,7 @@ export const useCartStore = defineStore(
   "cart",
   () => {
     const store = useUserStore();
-    //如果拿到了token,那islogin就是true,否则就是false
+    //如果拿到了token,那islogin就是true,用户登录了，否则就是false，用户没有登录
     const isLogin = computed(() => store.userInfo.token);
     //定义state-cartList
     const cartList = ref([]);
@@ -20,7 +20,7 @@ export const useCartStore = defineStore(
     const addCart = async (goods) => {
       const { skuId, count } = goods;
       if (isLogin.value) {
-        //登录之后的加入购物车逻辑,调用接口
+        //登录之后的加入购物车逻辑,调用接口。后端会判断数据是否已经存在，如果存在就数量加1，如果不存在就添加
         await insertCartAPI({ skuId, count });
         upDateCartList();
       } else {
@@ -61,6 +61,7 @@ export const useCartStore = defineStore(
     };
 
     //计算属性 总数量是所有count的和,总价格是所有count*price的和
+    //reduce是累计器，a是累计的结果，c是当前项，0是初始值
     const allCount = computed(() => {
       return cartList.value.reduce((a, c) => a + c.count, 0);
     });

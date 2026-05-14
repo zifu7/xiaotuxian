@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+// 用useRouter而不是import router。useRouter是vue router专门给<script setup>提供的。
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
@@ -27,7 +28,7 @@ const rules = {
     { required: true, message: "密码不能为空", trigger: "blur" },
     { min: 6, max: 14, message: "密码长度必须在6-14位", trigger: "blur" },
   ],
-  // 自定义校验规则
+  // 自定义校验规则。固定写法。Element会将输入的值传给validator函数，validator函数根据值是否符合规则来决定校验是否通过。
   agree: [
     {
       validator: (rule, value, callback) => {
@@ -44,19 +45,22 @@ const rules = {
 // 用form实例来做统一校验
 const formRef = ref(null);
 const router = useRouter();
+// 点击登录触发函数
 const doLogin = () => {
-  // 解构赋值
+  // 解构赋值，拿到表单对象中的用户名和密码
   const { account, password } = form.value;
+  // 触发表单整体校验，valid是一个布尔值，表示校验是否通过
   formRef.value.validate(async (valid) => {
     if (valid) {
+      // 调用pinia中的getUserInfo方法，发送登录请求
       await userStore.getUserInfo({ account, password });
       // console.log(res);
-      // 提示用户登录成功
+      // 弹出提示框，提示用户登录成功
       ElMessage({
         type: "success",
         message: "登录成功",
       });
-      // 跳转到首页,replase防止用户重复跳转
+      // 跳转到首页,replace防止用户重复跳转。push会在历史记录中留下登录页的记录，用户点击返回会回到登录页；replace不会留下登录页的记录。
       router.replace("/");
     }
   });
