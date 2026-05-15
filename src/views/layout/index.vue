@@ -3,7 +3,7 @@ import LayoutNav from "./components/LayoutNav.vue";
 import LayoutHeader from "./components/LayoutHeader.vue";
 import LayoutFooter from "./components/LayoutFooter.vue";
 import LayoutFixed from "./components/LayoutFixed.vue";
-
+import BackTop from "./components/BackTop.vue";
 import { useCategoryStore } from "@/stores/category";
 import { onMounted } from "vue";
 const categoryStore = useCategoryStore();
@@ -21,4 +21,5 @@ onMounted(() => {
   <!-- <RouterView :key="$route.fullPath" /> -->
   <RouterView />
   <LayoutFooter />
+  <BackTop />
 </template>
