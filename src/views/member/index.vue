@@ -12,6 +12,9 @@
         <div class="links">
           <RouterLink to="/member/order">我的订单</RouterLink>
         </div>
+        <div class="links">
+          <RouterLink to="/footprint">我的足迹</RouterLink>
+        </div>
       </div>
     </div>
     <div class="article">

@@ -15,6 +15,7 @@ import Member from "@/views/member/index.vue";
 import UserInfo from "@/views/member/components/userInfo.vue";
 import UserOrder from "@/views/member/components/userOrder.vue";
 import { useUserStore } from "@/stores/user.js";
+import FootPrint from "@/views/footPrint/index.vue";
 // 访问某个路径router，显示对应的组件component
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,10 +37,11 @@ const router = createRouter({
         { path: "checkout", component: Checkout },
         { path: "pay", component: Pay },
         { path: "paycallback", component: PayBack },
+        { path: "/footprint", component: FootPrint },
         {
           path: "member",
           component: Member,
-          //只有登录之后才能访问会员中心
+          //只有登录之后才能访问会员中心，未登录状态访问会返回登录页
           meta: { requiresAuth: true },
           children: [
             {
@@ -62,13 +64,10 @@ const router = createRouter({
   },
 });
 // 路由守卫：拦截需要登录的页面
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   const userStore = useUserStore();
-  // 如果目标页面需要登录，且没有 token
   if (to.meta.requiresAuth && !userStore.userInfo.token) {
-    next("/login"); // 没登录，踢回登录页
-  } else {
-    next(); // 已登录或不需要登录，正常放行
+    return "/login";
   }
 });
 

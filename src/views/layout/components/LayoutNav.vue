@@ -27,10 +27,10 @@ const confirm = () => {
             </el-popconfirm>
           </li>
           <li><a href="javascript:;">我的订单</a></li>
-          <li><a href="javascript:;">会员中心</a></li>
+          <li><RouterLink to="/member">会员中心</RouterLink></li>
+          <li><RouterLink to="/footprint">我的足迹</RouterLink></li>
         </template>
         <template v-else>
-          <!-- @click="$router.push('/login')"点击跳转到登录页 -->
           <li><a href="javascript:;" @click="$router.push('/login')">请先登录</a></li>
           <li><a href="javascript:;">帮助中心</a></li>
           <li><a href="javascript:;">关于我们</a></li>

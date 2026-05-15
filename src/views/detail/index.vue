@@ -4,12 +4,22 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import detailHot from "./components/detailHot.vue";
 import { useCartStore } from "@/stores/cartStore";
+import { useFootprintStore } from "@/stores/footPrintStore";
+const footprintStore = useFootprintStore();
+
 const cartStore = useCartStore();
 const route = useRoute();
 const goods = ref({});
 const getGoods = async () => {
   const res = await getDetailAPI(route.params.id);
   goods.value = res.result;
+  //添加足迹
+  footprintStore.addFootprint({
+    skuId: res.result.id,
+    name: res.result.name,
+    price: res.result.price,
+    picture: res.result.mainPictures?.[0],
+  });
 };
 onMounted(() => {
   getGoods();
